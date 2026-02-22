@@ -135,7 +135,7 @@ public class TestArray : MonoBehaviour
         De.Print($"1차원 배열이 {(result_2 / result_1):F3}배 더 빠릅니다.");
     }
 
-    // 2차원 배열의 캐시 효율 박살 * 무거운 연산 => 1차원 배열이 10배 빠름
+    // 2차원 배열의 캐시 효율 박살 * 무거운 연산 => 1차원 배열이 2배 빠름
     [ContextMenu("배열 평탄화 테스트 (4)")]
     private void FlatteningTest_CashHardCalc()
     {
