@@ -13,9 +13,10 @@ public class TransformMover : MonoBehaviour
     [SerializeField] private Transform _player;
 
     [Header("사용자 정의 설정")]
-    [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private bool _enable = true;
+    [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private bool _rotateBody = true;
+    [SerializeField] private float _rotateSpeed = 360f;
     #endregion
 
     #region ─────────────────────────▶ 접근자 ◀─────────────────────────
@@ -32,7 +33,7 @@ public class TransformMover : MonoBehaviour
     {
         v = Input.GetAxis("Vertical");
         h = Input.GetAxis("Horizontal");
-        if (Mathf.Approximately(v, 0f) && Mathf.Approximately(v, 0f)) {
+        if (v == 0f && h == 0f) {
             return false;
         }
         return true;
@@ -54,10 +55,9 @@ public class TransformMover : MonoBehaviour
     {
         float v, h;
         if (TryGetMovement(out v, out h)) {
-            if (v > 0f) v = 1f;
-            if (h > 0f) h = 1f;
             Vector3 axis = new Vector3(h, 0f, v);
-            _player.rotation = Quaternion.LookRotation(axis);
+            Quaternion desired = Quaternion.LookRotation(axis);
+            _player.rotation = Quaternion.RotateTowards(_player.rotation, desired, _rotateSpeed * Time.deltaTime);
         }
     }
 
