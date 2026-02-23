@@ -2,24 +2,21 @@
 
 /// <summary>
 /// 오브젝트에 부착하는 C# 스크립트입니다.
-/// 부착된 오브젝트는 랜덤 축으로 회전합니다.
+/// 부착된 오브젝트는 Y축을 기준으로 빠르게 회전합니다.
 /// </summary>
-public class UseTransformRotateLocal : MonoBehaviour
+public class UseTransformEulerAngle : MonoBehaviour
 {
     #region ─────────────────────────▶ 내부 변수 ◀─────────────────────────
     [SerializeField] private Vector3 _originAxis;
-    private const float ROTATION_SPEED = 135f;
+    private const float ROTATION_SPEED = 270f;
     #endregion
 
     #region ─────────────────────────▶ 메시지 함수 ◀─────────────────────────
-    private void Start()
-    {
-        _originAxis = URand.GetAxis();
-    }
-
     private void Update()
     {
-        transform.Rotate(_originAxis, ROTATION_SPEED * Time.deltaTime, Space.Self);
+        float degreeY = transform.eulerAngles.y;
+        degreeY += ROTATION_SPEED * Time.deltaTime;
+        transform.eulerAngles = new Vector3(0f, degreeY, 0f);
     }
     #endregion
 }

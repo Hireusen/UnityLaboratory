@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 쿨타임을 관리하는 유틸리티 클래스입니다.
 /// </summary>
-public class UCool : MonoBehaviour
+public static class UCool
 {
     /// <summary>
     /// nextTime보다 현재 시간이 크면 True를 반환합니다.
