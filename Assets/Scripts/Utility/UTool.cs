@@ -144,14 +144,14 @@ public static class UTool
     }
 
     /// <summary>
-    /// 0 ~ 1 범위 확률로 True를 반환합니다.
+    /// 월드 평균 Scale 값을 반환합니다.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Chance(float chance)
+    public static float GetAverageScale(Transform transform)
     {
-        return UnityEngine.Random.value < chance;
+        Vector3 scale = transform.lossyScale;
+        return (scale.x + scale.y + scale.z) / 3f;
     }
-
     #region 애플리케이션
     public static void GameStop()
     {
