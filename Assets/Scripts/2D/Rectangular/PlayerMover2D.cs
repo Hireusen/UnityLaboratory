@@ -4,7 +4,7 @@
 /// ~ 오브젝트에 부착하는 C# 스크립트입니다.
 /// 인덱서, 스테이트 패턴이 적용된 2D 플레이어 무브 스크립트입니다.
 /// </summary>
-public class PlayerMove2D : MonoBehaviour
+public class PlayerMover2D : MonoBehaviour
 {
     #region ─────────────────────────▶ 인스펙터 ◀─────────────────────────
     [Header("필수 요소 등록")]
