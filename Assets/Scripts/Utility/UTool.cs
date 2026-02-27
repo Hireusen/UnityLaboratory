@@ -70,7 +70,7 @@ public static class UTool
     public static int LayerToBit(string layerName)
     {
         int layer = LayerMask.NameToLayer(layerName);
-        if(layer >= 0) {
+        if (layer >= 0) {
             return 1 << layer;
         }
         De.Print($"존재하지 않는 레이어 이름 {layerName}을 받았습니다.", LogType.Assert);
@@ -114,7 +114,7 @@ public static class UTool
         return (layerMask & (1 << go.layer)) != 0;
     }
     #endregion
-  
+
     /// <summary>
     /// HEX 문자열을 Color로 변환합니다.
     /// 실패하면 Color.white를 반환합니다.
@@ -151,6 +151,30 @@ public static class UTool
     {
         Vector3 scale = transform.lossyScale;
         return (scale.x + scale.y + scale.z) / 3f;
+
+    }
+
+    /// <summary>
+    /// 자신 또는 자식 오브젝트에서 컴포넌트를 찾아서 반환합니다.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T GetComp<T>(GameObject obj) where T : Component
+    {
+        // 방어 코드
+        if (obj == null) {
+            return null;
+        }
+        // 실행 코드
+        T comp = null;
+        comp = obj.GetComponent<T>();
+        if (comp != null) {
+            return comp;
+        }
+        comp = obj.GetComponentInChildren<T>();
+        if (comp != null) {
+            return comp;
+        }
+        return null;
     }
     #region 애플리케이션
     public static void GameStop()
