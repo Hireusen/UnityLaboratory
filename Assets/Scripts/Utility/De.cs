@@ -4,12 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-/// <summary>
-/// 디버그 로그를 관리하는 유틸리티 클래스입니다.
-/// </summary>
 public static class De
 {
-    #region ─────────────────────────▶ 내부 멤버 ◀─────────────────────────
     // 로그 출력 여부
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     private const bool ENABLE_LOG = true;
@@ -20,20 +16,21 @@ public static class De
     private const bool ENABLE_ONCE = true;
     private const bool ENABLE_PAUSE = false;
 #endif
-
+    #region 내부 멤버
     private static readonly HashSet<string> _logHistory = new HashSet<string>();
-    private static GUIStyle _rectStyle;
 
     // 플레이 모드가 시작될 때 자동으로 로그 기록을 초기화합니다.
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetHistory() => _logHistory.Clear();
+    private static void ResetHistory()
+    {
+        _logHistory.Clear();
+    }
 
-    // 매개변수를 받아 디버그 로그를 출력합니다.
-    private static void LogInternal(string message, string file, int line, LogType type = LogType.Log, bool once = ENABLE_ONCE)
+    private static void LogInternal(string message, string file, int line, LogType type = LogType.Log)
     {
         if (!ENABLE_LOG)
             return;
-        if (once) {
+        if (ENABLE_ONCE) {
             string key = file + line;
             if (_logHistory.Contains(key)) return;
             _logHistory.Add(key);
@@ -57,7 +54,7 @@ public static class De
     }
     #endregion
 
-    #region ─────────────────────────▶ 외부 멤버 ◀─────────────────────────
+    #region 외부 공개 멤버
     /// <summary>
     /// 오브젝트가 Null 또는 Fake Null일 경우 True를 반환하고 로그를 출력합니다.
     /// </summary>
@@ -115,7 +112,8 @@ public static class De
         [CallerFilePath] string file = "",
         [CallerLineNumber] int line = 0)
     {
-        if (!condition) {
+        if (!condition)
+        {
             if (ENABLE_LOG) {
                 LogInternal($"<color=red>[False]</color> {message}", file, line, logType);
             }
@@ -136,23 +134,12 @@ public static class De
     {
         LogInternal($"<color=cyan>[Log]</color> {message}", file, line, logType);
     }
-
-    /// <summary>
-    /// 로그를 출력합니다.
-    /// </summary>
-    [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
-    public static void PrintOnce(
-        object message,
-        LogType logType = LogType.Log,
-        [CallerFilePath] string file = "",
-        [CallerLineNumber] int line = 0)
-    {
-        LogInternal($"<color=cyan>[Log]</color> {message}", file, line, logType, true);
-    }
+    #endregion
 
     /// <summary>
     /// GUIStyle 변수에 접근합니다.
     /// </summary>
+    private static GUIStyle _rectStyle;
     public static GUIStyle RectStyle
     {
         get {
@@ -170,6 +157,9 @@ public static class De
     /// 게임 화면에 텍스트를 출력합니다.
     /// OnGUI 이벤트 내부에서 호출해야 합니다.
     /// </summary>
+    /// <param name="text"></param>
+    /// <param name="fontSize"></param>
+    /// <param name="where"></param>
     public static void DrawText(string text, int fontSize = 30, EWhere where = EWhere.Up)
     {
         float w = Screen.width, h = Screen.height;
@@ -177,16 +167,10 @@ public static class De
         float x = 0, y = 0;
         // 가로 정렬
         switch (where) {
-            case EWhere.LeftUp:
-            case EWhere.Left:
-            case EWhere.LeftDown:
-            case EWhere.Up:
-            case EWhere.Center:
-            case EWhere.Down:
+            case EWhere.LeftUp: case EWhere.Left: case EWhere.LeftDown:
+            case EWhere.Up: case EWhere.Center: case EWhere.Down:
                 x = 0; break;
-            case EWhere.RightUp:
-            case EWhere.Right:
-            case EWhere.RightDown:
+            case EWhere.RightUp: case EWhere.Right: case EWhere.RightDown:
                 x = halfW; break;
         }
         // 세로 정렬
@@ -202,9 +186,7 @@ public static class De
         RectStyle.fontSize = fontSize;
         GUI.Label(new Rect(x, y, rectW, rectH), text, RectStyle);
     }
-    #endregion
 }
-
 // C# 최신 문법을 구버전에서 쓰기 위한 코드입니다.
 namespace System.Runtime.CompilerServices
 {

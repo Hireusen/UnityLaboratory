@@ -88,12 +88,13 @@ public class FlappyPlayerController2D : MonoBehaviour
     }
 
     // 플레이어 사망 확정 → 입력 / 충돌 / 중복 사망 잠금
-    private void Die()
+    private void Die(string message)
     {
         if (_isDead)
             return;
         // 이벤트
         _isDead = true;
+        _rb.velocity = Vector2.zero;
         // FlappyGameManager2D.Ins.NotifyPlayerDead();
     }
     #endregion
@@ -132,7 +133,18 @@ public class FlappyPlayerController2D : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        
+        if (_isDead)
+            return;
+        string tag = other.collider.tag;
+
+        // 여기에서 파이프 충돌 이외에도 땅으로 떨어지는 경우도 있다.
+        // 사망 처리
+        if (string.IsNullOrEmpty(tag)) {
+            return;
+        }
+        if (tag == _pipeTag || tag == _groundTag) {
+            Die($"");
+        }
     }
     #endregion
 }

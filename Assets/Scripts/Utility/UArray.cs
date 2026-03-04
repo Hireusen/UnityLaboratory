@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 /// <summary>
-/// 배열과 리스트를 다루는 유틸리티 클래스입니다.
+/// 배열과 리스트를 다루는 유틸리티입니다.
 /// </summary>
 public static class UArray
 {
     /// <summary>
     /// 배열 크기를 조정하며, 성공 여부에 따라 True 또는 False를 반환합니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="targetArray"></param>
+    /// <param name="multiplySize"></param>
+    /// <returns></returns>
     public static bool TryResizeArray<T>(ref T[] targetArray, double multiplySize)
     {
         if (De.IsNull(targetArray, LogType.Exception))
@@ -39,6 +43,8 @@ public static class UArray
     /// <summary>
     /// 피셔 예이츠 셔플로 배열을 무작위로 섞습니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="array"></param>
     public static void Shuffle<T>(this T[] array)
     {
         if (array == null)
@@ -46,6 +52,7 @@ public static class UArray
         int length = array.Length - 1;
         for (int i = length; i > 0; --i) {
             int j = UnityEngine.Random.Range(0, i + 1);
+
             T tmp = array[i];
             array[i] = array[j];
             array[j] = tmp;
@@ -55,6 +62,8 @@ public static class UArray
     /// <summary>
     /// 피셔 예이츠 셔플로 리스트를 무작위로 섞습니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
     public static void Shuffle<T>(this List<T> list)
     {
         if (list == null)
@@ -71,6 +80,9 @@ public static class UArray
     /// <summary>
     /// 리스트의 마지막 요소와 교체하고, 마지막 요소를 삭제합니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="index"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SwapLastAndRemove<T>(this List<T> list, int index)
     {
@@ -87,6 +99,9 @@ public static class UArray
     /// 리스트와 각 요소가 모두 초기화되어 있다면 True를 반환합니다.
     /// False일 경우 De 클래스로 로그를 출력합니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <returns></returns>
     public static bool IsInitedList<T>(List<T> list)
     {
         if (De.IsNull(list, LogType.Exception))
@@ -107,6 +122,9 @@ public static class UArray
     /// 1차원 배열과 각 요소가 모두 초기화되어 있다면 True를 반환합니다.
     /// False일 경우 De 클래스로 로그를 출력합니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static bool IsInitedArray<T>(T[] array)
     {
         if (De.IsNull(array, LogType.Exception))
@@ -128,6 +146,10 @@ public static class UArray
     /// <summary>
     /// 인덱스가 배열 범위 안에 있는지 검사합니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="array"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InBounds<T>(T[] array, int index)
     {
@@ -143,6 +165,10 @@ public static class UArray
     /// <summary>
     /// 인덱스가 리스트 범위 안에 있는지 검사합니다.
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InBounds<T>(List<T> list, int index)
     {
