@@ -21,6 +21,8 @@ public class FlappyPlayerController2D : MonoBehaviour
     // 태그
     [SerializeField] private string _pipeTag = "Pipe";
     [SerializeField] private string _groundTag = "Ground";
+
+    [SerializeField] private bool _dieOnAnyCollision = true;
     #endregion
 
     #region ─────────────────────────▶ 접근자 ◀─────────────────────────
@@ -142,8 +144,17 @@ public class FlappyPlayerController2D : MonoBehaviour
         if (string.IsNullOrEmpty(tag)) {
             return;
         }
-        if (tag == _pipeTag || tag == _groundTag) {
-            Die($"");
+        if (_dieOnAnyCollision || tag == _pipeTag || tag == _groundTag) {
+            Die($"충돌! {other.collider.name}");
+        }
+
+        // 이벤트 발생
+        FlappyGameManager2D gm = FlappyGameManager2D.Ins;
+        if(gm == null) {
+            // null이면.. 왜 null이야?
+        }
+        if(gm != null) {
+            // 이벤트 뿌릴게요!
         }
     }
     #endregion

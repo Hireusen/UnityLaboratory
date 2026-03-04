@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: ad581831ee2f28e4f87e9945b415a01b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -114,7 +114,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.006609395, y: -0.0065534115}
@@ -203,7 +203,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: b9afd07611b7a434ead02d3dae840627, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -244,7 +244,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.010225296, y: 0.01413393}
@@ -270,6 +270,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7990230003777571729}
   - component: {fileID: 8267904153521677697}
+  - component: {fileID: 6294203746910023252}
+  - component: {fileID: 5020857406651489868}
   m_Layer: 0
   m_Name: PipePair
   m_TagString: Untagged
@@ -309,3 +311,33 @@ MonoBehaviour:
   _topPipe: {fileID: 5120411710887108831}
   _bottomPipe: {fileID: 8579323507726243536}
   _gapSize: 3
+--- !u!114 &6294203746910023252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5161600499136780801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43031d635a54ea242b3bd8ee5135c7f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speedProvider: {fileID: 0}
+  _multiplier: 1
+  _fallbackSpeed: 2
+  _useUnscaledTime: 0
+--- !u!114 &5020857406651489868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5161600499136780801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54ca6f3ee9d2ce14486c905c22f98e8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraTr: {fileID: 0}
+  _destoryBehind: 14
