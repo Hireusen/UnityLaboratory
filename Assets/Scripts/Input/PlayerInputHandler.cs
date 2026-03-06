@@ -27,7 +27,7 @@ public class PlayerInputHandler : MonoBehaviour
     private Vector2 _moveInput;
     private bool _jumpRequested;
     // 리지드바디를 사용 안하고 있으니 직접 y속도를 누적시키기 위한 변수
-    private bool _verticalVel;
+    private float _verticalVel;
     private Coroutine _bindCo;
     #endregion
 
@@ -40,11 +40,52 @@ public class PlayerInputHandler : MonoBehaviour
     }
     private void HandleJump()
     {
-        
+        _jumpRequested = true;
     }
-    private void HandlePause()
+
+    private Vector3 BuildMoveDirection(Vector2 input)
     {
-        
+        if(input.sqrMagnitude < 0.0001f) {
+            return Vector3.zero;
+        }
+        if(_cameraTr == null) {
+            Vector3 moveDir = new Vector3(input.x, 0f, input.y);
+            return moveDir.normalized;
+        }
+        Vector3 camForward = Vector3.ProjectOnPlane(_cameraTr.forward, Vector3.up);
+        Vector3 camRight = Vector3.ProjectOnPlane(_cameraTr.right, Vector3.up);
+        return (camForward * input.x + camRight * input.y).normalized;
+    }
+
+    private void TickRotate(Vector3 moveDir)
+    {
+        if(moveDir.sqrMagnitude < 0.0001f) {
+            return;
+        }
+        Quaternion target = Quaternion.LookRotation(moveDir, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, UMath.GetSmoothT(_rotateSharpness, Time.deltaTime));
+    }
+
+    private void TickGravity()
+    {
+        if (_cc.isGrounded) {
+            if(_verticalVel < 0f) {
+                _verticalVel = _groundStick;
+            }
+        }
+        _verticalVel += _gravity * Time.deltaTime;
+    }
+
+    private void TryJump()
+    {
+        if (!_jumpRequested) {
+            return;
+        }
+        _jumpRequested = false;
+        if (!_cc.isGrounded) {
+            return;
+        }
+        _verticalVel = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
     }
 
     private void SubscribeInput()
@@ -55,7 +96,6 @@ public class PlayerInputHandler : MonoBehaviour
         }
         input.OnMove -= HandleMove;
         input.OnJump += HandleJump;
-        input.OnPause += HandlePause;
         De.Print("플레이어 이벤트 등록을 완료했습니다.");
     }
 
@@ -67,7 +107,6 @@ public class PlayerInputHandler : MonoBehaviour
         }
         input.OnMove -= HandleMove;
         input.OnJump -= HandleJump;
-        input.OnPause -= HandlePause;
         De.Print("플레이어 이벤트 등록을 해제했습니다.");
     }
 
@@ -81,6 +120,19 @@ public class PlayerInputHandler : MonoBehaviour
     #endregion
 
     #region ─────────────────────────▶ 메시지 함수 ◀─────────────────────────
+    private void Update()
+    {
+        TickGravity();
+        Vector3 moveDir = BuildMoveDirection(_moveInput);
+        Vector3 velocity = moveDir * _moveSpeed;
+        velocity.y = _verticalVel;
+        // 트랜스폼이어도 상관없지만 중력은 충돌을 받기 때문에 편리하다.
+        _cc.Move(velocity * Time.deltaTime);
+        // 각자 알아서 내부에서 조건 만족 시 실행
+        TickRotate(moveDir);
+        TryJump();
+    }
+
     private void Awake()
     {
         _cc = GetComponent<CharacterController>();
