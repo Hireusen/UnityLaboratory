@@ -58,77 +58,84 @@ public class ExInteractor : MonoBehaviour
             // 왜 Children? → 연결 즉 상속을 전제하는 경우가 많기 때문에 확인한다.
             // 콜라이더는 보통 자식에 붙어있는 편이고, 스크립트는 부모에 붙는 경우가 많기 때문이다.
             // 그래서 충돌체를 가진 오브젝트의 부모까지 올라가서 Interactable을 찾는다.
-            ExInteractableBase target = hits[i].GetComponentInChildren<ExInteractableBase>();
+            ExInteractableBase target = hits[i].GetComponentInParent<ExInteractableBase>();
             if(target == null) {
                 continue;
             }
+            // 쿨타임 & 1회성
+            if (!target.IsAvailable()) {
+                continue;
+            }
+            // 거리 계산
+            // 기준점은 _origin(플레이어)와 target.GetHintAnchorPosition()
+            // 오브젝트 피벗 등이 어긋날 수 있기 때문에 상호작용 기준점을 따로 둘 수 있게 세팅하겠다.
+            // 분명 캐릭터랑 맞닿은 것 같은데 왜 충돌이 안되지? 이런 일을 방지한다.
+            float distance = Vector2.Distance(_origin.position, target.GetHintAnchorPosition());
+            if (distance < bestDist) {
+                // 거리가 더 가까운 걸로 설정
+                bestDist = distance;
+                best = target;
+            }
         }
+        _current = best;
     }
-    #endregion
-
-    #region ─────────────────────────▶ 외부 메서드 ◀─────────────────────────
-    // 인스펙터 유효성 검사
-    public void Verification() {
-
+    // 힌트 출력 (개발 용도)
+    // 나중에 UI 붙을테니 그때가면 필요없어지니까 그때는 삭제
+    private void PrintHintIfNeeded()
+    {
+        if (!_logEnable) {
+            return;
+        }
+        if(_current == null) {
+            De.Print($"[E] 주변에 상호작용 대상 없음");
+            return;
+        }
+        // 게임 상호작용은 대부분 이 형태 고정이다. (동사 + 이름)
+        // 텍스트 자체가 Base에서 나오기 때문에 (공통) → 새로운 상호작용 오브젝트를 추가해도 힌트 UI에 대한 코드는 바꿀 필요가 없다.
+        // 그러면 텍스트 형태도 정해져있는거네
+        string name = _current.GetDisplayName();
+        string verb = _current.GetVerbText();
+        De.Print($"[E] {name} {verb}");
     }
 
-    // 스크립트 내부 변수 초기화
-    public void Initialize() {
-
+    // 실제 입력이 들어왔을 때 호출되는 함수
+    private void TryInteract()
+    {
+        if(_current == null) {
+            return;
+        }
+        // 상속 구조를 만들고 왔기 때문에 편해졌다.
+        // 규칙 검사 (쿨타임 / 1회성 / 특정 아이템이 필요하냐?) + 실제 행동 (문 열기 / 줍기 / 올라선다)은 대상이 담당
+        _current.TryInteract(this);
     }
-
-    // 외부에 전달할 데이터 생성
-    public void DataBuilder() {
-
+    // 확장 요소 → 미래에 큰 그림을 그리는 나에게 주는 선물
+    // 흠.. 이 클래스 플레이어나 마찬가지라며? 그럼 그냥 플레이어 좌표 아냐?
+    // → 누가 눌렀는지 + 눌렀던 위치가 필요한 경우가 생길 수 있다. (사운드 + 이펙트 등)
+    public Vector3 GetPosition()
+    {
+        return transform.position;
     }
     #endregion
 
     #region ─────────────────────────▶ 메시지 함수 ◀─────────────────────────
-    private void Awake()
+    private void Update()
     {
-        if(_origin == null) {
-            _origin = transform;
+        FindInteractable();
+        PrintHintIfNeeded(); // 디버깅용 로그
+        if (Input.GetKeyDown(_interactKey)) {
+            TryInteract();
         }
     }
 
-    private void OnEnable()
+    private void OnDrawGizmosSelected()
     {
-
-    }
-
-    private void Start()
-    {
-
-    }
-
-    private void Update()
-    {
-
-    }
-
-    private void LateUpdate()
-    {
-
-    }
-
-    private void OnDisable()
-    {
-
-    }
-
-    private void OnDestroy()
-    {
-        
-    }
-
-    private void Reset()
-    {
-        
-    }
-
-    private void OnValidate()
-    {
-
+        if (!_showGizmo) {
+            return;
+        }
+        Transform o = (_origin != null) ? _origin : transform;
+        // 알파값은 대부분 프레임 드랍의 주범이다. 특히 3D는 그렇다.
+        Gizmos.color = new Color(0.2f, 1f, 0.8f, 0.35f);
+        Gizmos.DrawSphere(o.position, _radius);
     }
     #endregion
 }
